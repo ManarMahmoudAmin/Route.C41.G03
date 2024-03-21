@@ -15,8 +15,8 @@ namespace Route.C41.G03.DAL.Data
         {
             
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-           => optionsBuilder.UseSqlServer("Server = .; Database = MVCApplicationG03; Trusted_Connection = True");
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //   => optionsBuilder.UseSqlServer("Server = .; Database = MVCApplicationG03; Trusted_Connection = True");
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
