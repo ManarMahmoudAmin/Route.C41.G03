@@ -61,6 +61,7 @@ namespace Route.C41.G03.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, Department department)
         {
             if(id != department.Id)
@@ -82,6 +83,11 @@ namespace Route.C41.G03.PL.Controllers
                     ModelState.AddModelError(string.Empty, "An Error Has Occured during Updating the Department");
                 return View(department);
             }
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            return Details(id, "Delete");
         }
 
     }
