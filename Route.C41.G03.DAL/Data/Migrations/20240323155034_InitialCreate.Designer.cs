@@ -10,7 +10,7 @@ using Route.C41.G03.DAL.Data;
 namespace Route.C41.G03.DAL.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240321121745_InitialCreate")]
+    [Migration("20240323155034_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

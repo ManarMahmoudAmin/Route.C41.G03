@@ -10,7 +10,7 @@ namespace Route.C41.G03.BLL.Interfaces
     public interface IDepartmentRepository
     {
         IEnumerable<Department> GetAll();
-        Department GetById(int id);
+        Department Get(int id);
         int Add(Department entity);
         int Update(Department entity);
         int Delete(Department entity);

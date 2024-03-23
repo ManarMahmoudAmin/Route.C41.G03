@@ -18,9 +18,15 @@ namespace Route.C41.G03.BLL.Repositories
         {
             _dbContext = dbContext;
         }
+
         public int Add(Department entity)
         {
             _dbContext.Departments.Add(entity);
+            return _dbContext.SaveChanges();
+        }
+        public int Update(Department entity)
+        {
+            _dbContext.Departments.Update(entity);
             return _dbContext.SaveChanges();
         }
 
@@ -31,18 +37,17 @@ namespace Route.C41.G03.BLL.Repositories
         }
 
         public IEnumerable<Department> GetAll()
-           => _dbContext.Departments.AsNoTracking().ToList();
-        
+        {
+            return _dbContext.Departments.AsNoTracking().ToList();
+        }
 
-        public Department GetById(int id)
+
+        public Department Get(int id)
         {
             return _dbContext.Departments.Find(id);
         }
 
-        public int Update(Department entity)
-        {
-            _dbContext.Departments.Update(entity);
-            return _dbContext.SaveChanges();
-        }
+
     }
 }
+
