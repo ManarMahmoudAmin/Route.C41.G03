@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G03.BLL.Repositories
 {
-    internal class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
