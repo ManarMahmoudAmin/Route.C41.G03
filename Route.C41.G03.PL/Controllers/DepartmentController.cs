@@ -44,7 +44,7 @@ namespace Route.C41.G03.PL.Controllers
 
         public IActionResult Details(int? id, string viewName = "Details")
         {
-            if (id!.HasValue)
+            if (!id.HasValue)
                 return BadRequest();
 
             var department =_departmentsRepo.Get(id.Value);

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G03.DAL.Data.Configurations
 {
-    internal class EmployeeConfiguratuion : IEntityTypeConfiguration<Employee>
+    internal class EmployeeConfiguratuions : IEntityTypeConfiguration<Employee>
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
