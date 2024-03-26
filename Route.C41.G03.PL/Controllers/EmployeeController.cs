@@ -26,6 +26,7 @@ namespace Route.C41.G03.PL.Controllers
             ViewData["Message"] = "Hello From View Data";
 
             ViewBag.Message = "Hello From View Bag";
+
             return View(employees);
         }
         [HttpGet]
@@ -41,7 +42,11 @@ namespace Route.C41.G03.PL.Controllers
             {
                 var count = _EmployeesRepo.Add(employee);
                 if (count > 0)
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee Is Created Successfully";
+                else  
+                    TempData["Message"] = "An Error Has Occurred, Employee Is Not Created ";
+                
+                return RedirectToAction(nameof(Index));
             }
             return View(employee);
         }

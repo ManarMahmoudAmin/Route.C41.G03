@@ -5,6 +5,12 @@
     string VDataMessage = ViewData["Message"] as string;
     string VBagMessage = ViewBag.Message;
 }
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
 
 @*
 <div class="alert alert-secondary">

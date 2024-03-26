@@ -37,7 +37,10 @@ namespace Route.C41.G03.PL.Controllers
             {
                 var count = _departmentsRepo.Add(department);
                 if (count > 0)
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Department Is Created Successfully";
+                else
+                    TempData["Message"] = "An Error Has Occurred, Department Is Not Created ";
+                return RedirectToAction(nameof(Index));
             }
             return View(department);
         }
