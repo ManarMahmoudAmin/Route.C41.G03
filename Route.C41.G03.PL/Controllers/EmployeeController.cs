@@ -22,6 +22,8 @@ namespace Route.C41.G03.PL.Controllers
         public IActionResult Index()
         {
             var employees = _EmployeesRepo.GetAll();
+          
+
             return View(employees);
         }
         [HttpGet]
