@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Route.C41.G03.BLL.Interfaces;
 using Route.C41.G03.BLL.Repositories;
 using Route.C41.G03.DAL.Data;
+using Route.C41.G03.PL.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +32,13 @@ namespace Route.C41.G03.PL
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            {
 
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            }, ServiceLifetime.Scoped);
+            services.AddApplicationServices();
+
+
 
         }
 
