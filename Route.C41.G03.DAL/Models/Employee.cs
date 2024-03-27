@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -57,5 +58,9 @@ namespace Route.C41.G03.DAL.Models
         public DateTime CreationDate { get; set; }
         public bool IsDeleted { get; set; }
 
+        //[ForeignKey("Department")]
+        public int? DepartmentId {  get; set; }
+        //[InverseProperty(nameof(Models.Department.Employees))]
+        public Department Department { get; set; }
     }
 }

@@ -17,5 +17,7 @@ namespace Route.C41.G03.DAL.Models
         public string Name { get; set; }
         //[Display(Name= "Date Of Creation")]
         public DateTime DateOfCreation { get; set; }
+
+        public ICollection<Employee> Employees { get; set; }
     }
 }
