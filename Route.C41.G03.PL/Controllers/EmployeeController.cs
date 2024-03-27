@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G03.BLL.Interfaces;
 using Route.C41.G03.DAL.Models;
+using System.Linq;
 
 namespace Route.C41.G03.PL.Controllers
 {
@@ -20,16 +21,16 @@ namespace Route.C41.G03.PL.Controllers
             _env = env;
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string searchInput)
         {
-            var employees = _EmployeesRepo.GetAll();
+            var employees = Enumerable.Empty<Employee>();
 
-            ViewData["Message"] = "Hello From View Data";
+            if (string.IsNullOrEmpty(searchInput))
+                employees = _EmployeesRepo.GetAll();
+            else
+                employees = _EmployeesRepo.SearchByName(searchInput.ToLower());
+             return View(employees);
 
-            ViewBag.Message = "Hello From View Bag";
-
-            return View(employees);
         }
         [HttpGet]
 

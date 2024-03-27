@@ -12,7 +12,7 @@ namespace Route.C41.G03.BLL.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _dbContext;
+        private protected readonly ApplicationDbContext _dbContext;
 
         public GenericRepository(ApplicationDbContext dbContext)
         {

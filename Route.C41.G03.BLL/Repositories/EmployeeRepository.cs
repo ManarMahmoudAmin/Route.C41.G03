@@ -12,15 +12,15 @@ namespace Route.C41.G03.BLL.Repositories
 {
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-
         public EmployeeRepository(ApplicationDbContext dbContext):base(dbContext)
         {
-            _dbContext = dbContext;
         }
         public IQueryable GetEmployeesByAddress(string address)
         {
             return _dbContext.Employees.Where(E => E.Address == address);
         }
+
+        public IEnumerable<Employee> SearchByName(string name)
+            => _dbContext.Employees.Where(E => E.Name.ToLower().Contains(name));
     }
 }
