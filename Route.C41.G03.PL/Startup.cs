@@ -33,10 +33,11 @@ namespace Route.C41.G03.PL
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             }, ServiceLifetime.Scoped);
             services.AddApplicationServices();
+
+
 
 
 

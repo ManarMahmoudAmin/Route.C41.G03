@@ -9,14 +9,17 @@ namespace Route.C41.G03.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
 
-        private readonly IEmployeeRepository _EmployeesRepo;
+        //private readonly IEmployeeRepository _EmployeesRepo;
         //private readonly IDepartmentRepository _departmentRepos;
         private readonly IWebHostEnvironment _env;
 
-        public EmployeeController(IEmployeeRepository EmployeesRepo, /*IDepartmentRepository departmentRepos,*/ IWebHostEnvironment env)
+        public EmployeeController(IUnitOfWork unitOfWork, /*IDepartmentRepository departmentRepos,*/ IWebHostEnvironment env)
         {
-            _EmployeesRepo = EmployeesRepo;
+            _unitOfWork = unitOfWork;
+
+            //_EmployeesRepo = EmployeesRepo;
             //_departmentRepos = departmentRepos;
             _env = env;
         }
@@ -26,10 +29,12 @@ namespace Route.C41.G03.PL.Controllers
             var employees = Enumerable.Empty<Employee>();
 
             if (string.IsNullOrEmpty(searchInput))
-                employees = _EmployeesRepo.GetAll();
+                employees = _unitOfWork.EmployeeRepository.GetAll();
             else
-                employees = _EmployeesRepo.SearchByName(searchInput.ToLower());
-             return View(employees);
+                employees = _unitOfWork.EmployeeRepository.SearchByName(searchInput.ToLower());
+            _unitOfWork.Complete();
+
+            return View(employees);
 
         }
         [HttpGet]
@@ -44,12 +49,14 @@ namespace Route.C41.G03.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var count = _EmployeesRepo.Add(employee);
+                 _unitOfWork.EmployeeRepository.Add(employee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                     TempData["Message"] = "Employee Is Created Successfully";
                 else  
                     TempData["Message"] = "An Error Has Occurred, Employee Is Not Created ";
-                
+                _unitOfWork.Complete();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(employee);
@@ -60,10 +67,11 @@ namespace Route.C41.G03.PL.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var employee = _EmployeesRepo.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
 
             if (employee is null)
                 return NotFound();
+            _unitOfWork.Complete();
 
             return View(viewName, employee);
         }
@@ -86,7 +94,7 @@ namespace Route.C41.G03.PL.Controllers
 
             try
             {
-                _EmployeesRepo.Update(employee);
+                _unitOfWork.EmployeeRepository.Update(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (System.Exception ex)
@@ -95,6 +103,8 @@ namespace Route.C41.G03.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occured during Updating the employee");
+                _unitOfWork.Complete();
+
                 return View(employee);
             }
         }
@@ -109,7 +119,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             try
             {
-                _EmployeesRepo.Delete(employee);
+                _unitOfWork.EmployeeRepository.Delete(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (System.Exception ex)
@@ -118,6 +128,8 @@ namespace Route.C41.G03.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occured during Updating the employee");
+                _unitOfWork.Complete();
+
                 return View(employee);
             }
         }

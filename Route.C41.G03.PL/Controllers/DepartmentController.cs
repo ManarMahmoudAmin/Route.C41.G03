@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Route.C41.G03.BLL;
 using Route.C41.G03.BLL.Interfaces;
 using Route.C41.G03.BLL.Repositories;
 using Route.C41.G03.DAL.Models;
@@ -9,20 +10,22 @@ namespace Route.C41.G03.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-
-        private readonly IDepartmentRepository _departmentsRepo;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IDepartmentRepository _departmentsRepo;
         private readonly IWebHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepository departmentsRepo, IWebHostEnvironment env)
+        public DepartmentController(IUnitOfWork unitOfWork/*IDepartmentRepository departmentsRepo*/, IWebHostEnvironment env)
         {
-            _departmentsRepo = departmentsRepo ;
+            _unitOfWork = unitOfWork;
+            //_departmentsRepo = departmentsRepo ;
             _env = env;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var departments = _departmentsRepo.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            _unitOfWork.Complete();
             return View(departments);
         }
         [HttpGet]
@@ -33,9 +36,10 @@ namespace Route.C41.G03.PL.Controllers
         [HttpPost]
         public IActionResult Create(Department department)
         {
-            if(ModelState.IsValid) 
+            if(ModelState.IsValid)
             {
-                var count = _departmentsRepo.Add(department);
+                _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                     TempData["Message"] = "Department Is Created Successfully";
                 else
@@ -50,10 +54,12 @@ namespace Route.C41.G03.PL.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var department =_departmentsRepo.Get(id.Value);
+            var department =_unitOfWork.DepartmentRepository.Get(id.Value);
 
             if(department is null)
                 return NotFound();
+            _unitOfWork.Complete();
+
 
             return View(viewName, department);
         }
@@ -75,7 +81,7 @@ namespace Route.C41.G03.PL.Controllers
 
             try 
             {
-                _departmentsRepo.Update(department);
+                _unitOfWork.DepartmentRepository.Update(department);
                 return RedirectToAction(nameof(Index));
             }
             catch(System.Exception ex) 
@@ -84,6 +90,8 @@ namespace Route.C41.G03.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occured during Updating the Department");
+                _unitOfWork.Complete();
+
                 return View(department);
             }
         }
@@ -98,7 +106,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             try
             {
-                _departmentsRepo.Delete(department);
+                _unitOfWork.DepartmentRepository.Delete(department);
                 return RedirectToAction(nameof(Index));
             }
             catch(System.Exception ex)
@@ -107,6 +115,8 @@ namespace Route.C41.G03.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occured during Updating the Department");
+                _unitOfWork.Complete();
+
                 return View(department);
             }
         }
