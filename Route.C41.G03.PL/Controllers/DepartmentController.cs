@@ -24,7 +24,7 @@ namespace Route.C41.G03.PL.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = _unitOfWork.Repository<Department>().GetAll();
             _unitOfWork.Complete();
             return View(departments);
         }
@@ -38,7 +38,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             if(ModelState.IsValid)
             {
-                _unitOfWork.DepartmentRepository.Add(department);
+                _unitOfWork.Repository<Department>().Add(department);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                     TempData["Message"] = "Department Is Created Successfully";
@@ -54,7 +54,7 @@ namespace Route.C41.G03.PL.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var department =_unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
 
             if(department is null)
                 return NotFound();
@@ -81,7 +81,7 @@ namespace Route.C41.G03.PL.Controllers
 
             try 
             {
-                _unitOfWork.DepartmentRepository.Update(department);
+                _unitOfWork.Repository<Department>().Update(department);
                 return RedirectToAction(nameof(Index));
             }
             catch(System.Exception ex) 
@@ -106,7 +106,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             try
             {
-                _unitOfWork.DepartmentRepository.Delete(department);
+                _unitOfWork.Repository<Department>().Delete(department);
                 return RedirectToAction(nameof(Index));
             }
             catch(System.Exception ex)

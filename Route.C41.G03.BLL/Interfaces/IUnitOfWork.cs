@@ -8,8 +8,7 @@ namespace Route.C41.G03.BLL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        public IEmployeeRepository EmployeeRepository { get; set; }
-        public IDepartmentRepository DepartmentRepository { get; set; }
+        public IGenericRepository<T> Repository<T>() where T : class;
 
         int Complete();
         void Dispose();

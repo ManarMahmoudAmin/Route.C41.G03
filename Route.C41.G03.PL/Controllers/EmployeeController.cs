@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G03.BLL.Interfaces;
+using Route.C41.G03.BLL.Repositories;
 using Route.C41.G03.DAL.Models;
 using System.Linq;
 
@@ -27,11 +28,11 @@ namespace Route.C41.G03.PL.Controllers
         public IActionResult Index(string searchInput)
         {
             var employees = Enumerable.Empty<Employee>();
-
+            var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
             if (string.IsNullOrEmpty(searchInput))
-                employees = _unitOfWork.EmployeeRepository.GetAll();
+                employees = employeeRepo.GetAll();
             else
-                employees = _unitOfWork.EmployeeRepository.SearchByName(searchInput.ToLower());
+                employees = employeeRepo.SearchByName(searchInput.ToLower());
             _unitOfWork.Complete();
 
             return View(employees);
@@ -49,7 +50,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _unitOfWork.EmployeeRepository.Add(employee);
+                 _unitOfWork.Repository<Employee>().Add(employee);
                 var count = _unitOfWork.Complete();
                 if (count > 0)
                     TempData["Message"] = "Employee Is Created Successfully";
@@ -67,7 +68,7 @@ namespace Route.C41.G03.PL.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
 
             if (employee is null)
                 return NotFound();
@@ -94,7 +95,7 @@ namespace Route.C41.G03.PL.Controllers
 
             try
             {
-                _unitOfWork.EmployeeRepository.Update(employee);
+                _unitOfWork.Repository<Employee>().Update(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (System.Exception ex)
@@ -119,7 +120,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             try
             {
-                _unitOfWork.EmployeeRepository.Delete(employee);
+                _unitOfWork.Repository<Employee>().Delete(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (System.Exception ex)
