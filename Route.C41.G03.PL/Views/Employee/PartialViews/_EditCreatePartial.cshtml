@@ -1,4 +1,4 @@
-﻿@model Employee
+﻿@model EmployeeViewModel
 @* @inject IDepartmentRepository _derpartmentRepo; *@
 @inject IUnitOfWork _unitOfWork;
 @{
@@ -58,4 +58,8 @@
         </select>
     </div>
 
+</div>
+<div class="form-group">
+    <label class="col-form-label" asp-for="Image"></label>
+    <input type="file" asp-for="Image" class="form-control-file" />
 </div>

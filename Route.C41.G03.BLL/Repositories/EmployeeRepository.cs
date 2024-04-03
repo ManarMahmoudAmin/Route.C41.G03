@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Route.C41.G03.BLL.Repositories
 {
@@ -21,6 +22,7 @@ namespace Route.C41.G03.BLL.Repositories
         }
 
         public IEnumerable<Employee> SearchByName(string name)
-            => _dbContext.Employees.Where(E => E.Name.ToLower().Contains(name));
+            => _dbContext.Employees.Where(E => E.Name.ToLower().Contains(name.ToLower()));
+
     }
 }

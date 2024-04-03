@@ -11,43 +11,48 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G03.BLL
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly ApplicationDbContext _dbContext;
-        private Hashtable _repositories;
+
+        private Hashtable ObjectRepository;
+
+        public UnitOfWork(ApplicationDbContext dbContext)
+        {
+            //EmployeeRepository= new EmployeeRepository(dbContext);
+            //DepartmentRepository= new DepartmentRepository(dbContext);
+            _dbContext = dbContext;
+            ObjectRepository = new Hashtable();
+        }
+        //public IEmployeeRepository EmployeeRepository { get; set ; }
+        //public IDepartmentRepository DepartmentRepository { get ; set; }
+
+        public int Complete()
+        {
+            return _dbContext.SaveChanges();
+        }
+
+        public void Dispose()
+        => _dbContext.Dispose();
+
         public IGenericRepository<T> Repository<T>() where T : class
         {
-            var key = typeof(T).Name;
+            var Key = typeof(T).Name;
 
-            if(!_repositories.ContainsKey(key))
+            if (!ObjectRepository.ContainsKey(Key))
             {
-                if(key == nameof(Employee))
+                if (Key == nameof(Employee))
                 {
                     var repository = new EmployeeRepository(_dbContext);
-                    _repositories.Add(key, repository);
+                    ObjectRepository.Add(Key, repository);
                 }
                 else
                 {
                     var repository = new GenericRepository<T>(_dbContext);
-                    _repositories.Add(key, repository);
+                    ObjectRepository.Add(Key, repository);
                 }
             }
-            return _repositories[key] as IGenericRepository<T>;
-        }
-
-        public UnitOfWork(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-
-        }
-        public int Complete()
-        {
-           return _dbContext.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            _dbContext.Dispose();
+            return new GenericRepository<T>(_dbContext);
         }
     }
 }
