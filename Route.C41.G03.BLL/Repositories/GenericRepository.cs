@@ -32,16 +32,16 @@ namespace Route.C41.G03.BLL.Repositories
             _dbContext.Remove(entity);
         }
 
-        public T Get(int id)
-            => _dbContext.Set<T>().Find(id);
-        
-        public IEnumerable<T> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Employee))
-                return (IEnumerable<T>)_dbContext.Employees.Include(E => E.Department).AsNoTracking().ToList();
-            else
-                return _dbContext.Set<T>().AsNoTracking().ToList();
+               return (IEnumerable<T>) await _dbContext.Employees.Include(E => E.Department).AsNoTracking().ToListAsync();
+           else
+               return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
+
+        public async Task<T> GetAsync(int id)
+            => await _dbContext.Set<T>().FindAsync(id);
 
     }
 }

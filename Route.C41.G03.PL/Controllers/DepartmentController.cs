@@ -5,6 +5,7 @@ using Route.C41.G03.BLL;
 using Route.C41.G03.BLL.Interfaces;
 using Route.C41.G03.BLL.Repositories;
 using Route.C41.G03.DAL.Models;
+using System.Threading.Tasks;
 
 namespace Route.C41.G03.PL.Controllers
 {
@@ -22,10 +23,10 @@ namespace Route.C41.G03.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = _unitOfWork.Repository<Department>().GetAll();
-            _unitOfWork.Complete();
+            var departments = await _unitOfWork.Repository<Department>().GetAllAsync();
+            await _unitOfWork.Complete();
             return View(departments);
         }
         [HttpGet]
@@ -34,12 +35,12 @@ namespace Route.C41.G03.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Department department)
+        public async Task<IActionResult> Create(Department department)
         {
             if(ModelState.IsValid)
             {
                 _unitOfWork.Repository<Department>().Add(department);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.Complete();
                 if (count > 0)
                     TempData["Message"] = "Department Is Created Successfully";
                 else
@@ -49,24 +50,24 @@ namespace Route.C41.G03.PL.Controllers
             return View(department);
         }
 
-        public IActionResult Details(int? id, string viewName = "Details")
+        public async Task<IActionResult> Details(int? id, string viewName = "Details")
         {
             if (!id.HasValue)
                 return BadRequest();
 
-            var department = _unitOfWork.Repository<Department>().Get(id.Value);
+            var department = await _unitOfWork.Repository<Department>().GetAsync(id.Value);
 
             if(department is null)
                 return NotFound();
-            _unitOfWork.Complete();
+            await _unitOfWork.Complete();
 
 
             return View(viewName, department);
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return Details(id, "Edit");
+            return await Details(id, "Edit");
         }
 
         [HttpPost]
@@ -96,9 +97,9 @@ namespace Route.C41.G03.PL.Controllers
             }
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]

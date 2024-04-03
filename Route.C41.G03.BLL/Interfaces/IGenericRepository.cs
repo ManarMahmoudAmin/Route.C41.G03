@@ -12,8 +12,8 @@ namespace Route.C41.G03.BLL.Interfaces
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
-        IEnumerable<T> GetAll();
-        T Get(int id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetAsync(int id);
 
         
     }

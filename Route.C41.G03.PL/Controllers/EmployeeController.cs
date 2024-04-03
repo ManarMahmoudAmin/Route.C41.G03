@@ -12,6 +12,7 @@ using Route.C41.G03.PL.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Route.C41.G03.PL.Controllers
 {
@@ -46,13 +47,13 @@ namespace Route.C41.G03.PL.Controllers
         ///    return View(mappedEmployee);
         ///}
 
-        public IActionResult Index(string searchInput)
+        public async Task<IActionResult> Index(string searchInput)
         {
             var employees = Enumerable.Empty<Employee>();
             var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
 
             if (string.IsNullOrEmpty(searchInput))
-                employees = employeeRepo.GetAll();
+                employees = await employeeRepo.GetAllAsync();
             else
                 employees = employeeRepo.SearchByName(searchInput);
 
@@ -69,15 +70,15 @@ namespace Route.C41.G03.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
             if (ModelState.IsValid)
             {
-                var fileName = DocumentSettings.UploadFile(employeeVM.Image, "images");
+                var fileName = await DocumentSettings.UploadFile(employeeVM.Image, "images");
                 var mappedEmployee = _mapper.Map<EmployeeViewModel,Employee>(employeeVM);
                 mappedEmployee.ImageName = fileName;
                 _unitOfWork.Repository<Employee>().Add(mappedEmployee);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.Complete();
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -86,12 +87,12 @@ namespace Route.C41.G03.PL.Controllers
             return View(employeeVM);
         }
 
-        public IActionResult Details(int? id, string viewName = "Details")
+        public async Task<IActionResult> Details(int? id, string viewName = "Details")
         {
             if (!id.HasValue)
                 return BadRequest();
 
-            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
+            var employee = await _unitOfWork.Repository<Employee>().GetAsync(id.Value);
             var mappedEmployee = _mapper.Map<Employee, EmployeeViewModel>(employee);
 
             if (employee is null)
@@ -99,20 +100,20 @@ namespace Route.C41.G03.PL.Controllers
             if(viewName.Equals("Delete", StringComparison.OrdinalIgnoreCase) || viewName.Equals("Edit", StringComparison.OrdinalIgnoreCase));
             TempData["ImageName"] = employee.ImageName;
 
-            _unitOfWork.Complete();
+            await _unitOfWork.Complete();
 
             return View(viewName, mappedEmployee);
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             //ViewBag.Departments = _departmentRepos.GetAll();
-            return Details(id, "Edit");
+            return await Details(id, "Edit");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
             if (id != employeeVM.Id)
                 return BadRequest();
@@ -130,7 +131,7 @@ namespace Route.C41.G03.PL.Controllers
                 else
                 {
                     DocumentSettings.DeleteFile(TempData["ImageName"] as string, "Images");
-                    employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
+                    employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "Images");
                 }
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Update(mappedEmployee);
@@ -142,15 +143,15 @@ namespace Route.C41.G03.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
                     ModelState.AddModelError(string.Empty, "An Error Has Occured during Updating the employee");
-                _unitOfWork.Complete();
+                await _unitOfWork.Complete();
 
                 return View(employeeVM);
             }
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]

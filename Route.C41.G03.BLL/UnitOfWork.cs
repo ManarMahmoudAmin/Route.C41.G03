@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G03.BLL
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -27,13 +27,17 @@ namespace Route.C41.G03.BLL
         //public IEmployeeRepository EmployeeRepository { get; set ; }
         //public IDepartmentRepository DepartmentRepository { get ; set; }
 
-        public int Complete()
+        public async Task<int> Complete()
         {
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public void Dispose()
-        => _dbContext.Dispose();
+        public async ValueTask DisposeAsync() 
+        {
+             await _dbContext.DisposeAsync();
+        }
+
+
 
         public IGenericRepository<T> Repository<T>() where T : class
         {

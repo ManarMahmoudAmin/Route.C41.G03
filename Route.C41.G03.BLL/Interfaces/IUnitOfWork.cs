@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G03.BLL.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IAsyncDisposable
     {
         public IGenericRepository<T> Repository<T>() where T : class;
 
-        int Complete();
-        void Dispose();
+        public Task<int> Complete();
+
     }
 }
