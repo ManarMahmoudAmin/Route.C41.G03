@@ -1,8 +1,8 @@
 ﻿@model Employee
+@* @inject IDepartmentRepository _derpartmentRepo; *@
 @inject IUnitOfWork _unitOfWork;
-
 @{
-    var departments = new SelectList(_unitOfWork.DepartmentRepository.GetAll(), nameof(Department.Id), nameof(Department.Name));
+    var departments = new SelectList(_unitOfWork.Repository<Department>()/* _derpartmentRepo */.GetAll(), nameof(Department.Id), nameof(Department.Name));
 }
 
 <div class="form-group">
