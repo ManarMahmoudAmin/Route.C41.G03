@@ -9,6 +9,7 @@ using Route.C41.G03.BLL.Repositories;
 using Route.C41.G03.DAL.Models;
 using Route.C41.G03.PL.Helpers;
 using Route.C41.G03.PL.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -95,6 +96,9 @@ namespace Route.C41.G03.PL.Controllers
 
             if (employee is null)
                 return NotFound();
+            if(viewName.Equals("Delete", StringComparison.OrdinalIgnoreCase) || viewName.Equals("Edit", StringComparison.OrdinalIgnoreCase));
+            TempData["ImageName"] = employee.ImageName;
+
             _unitOfWork.Complete();
 
             return View(viewName, mappedEmployee);
@@ -118,6 +122,16 @@ namespace Route.C41.G03.PL.Controllers
 
             try
             {
+                if (employeeVM.Image == null)
+                {
+                    if (TempData["ImageName"] != null)
+                        employeeVM.ImageName = TempData["ImageName"] as string;
+                }
+                else
+                {
+                    DocumentSettings.DeleteFile(TempData["ImageName"] as string, "Images");
+                    employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
+                }
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                 _unitOfWork.Repository<Employee>().Update(mappedEmployee);
                 return RedirectToAction(nameof(Index));
@@ -144,6 +158,7 @@ namespace Route.C41.G03.PL.Controllers
         {
             try
             {
+                employeeVM.ImageName = TempData["ImageName"] as string;
                 var mappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
                 _unitOfWork.Repository<Employee>().Delete(mappedEmployee);

@@ -1,4 +1,4 @@
-﻿@model Employee
+﻿@model EmployeeViewModel
 @{
     ViewData["Title"] = "Delete Employee";
 }
@@ -6,6 +6,7 @@
 <h1>Are You Sure You Want Delete @Model.Name?</h1>
 
 <form asp-action="Delete">
+    <input type="hidden" asp-for="ImageName"/>
     <partial name="PartialViews/_DetailsDeletePartial" />
 
     <input type="submit" value="Delete" class="btn btn-danger" />
