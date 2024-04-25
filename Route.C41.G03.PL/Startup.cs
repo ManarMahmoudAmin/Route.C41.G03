@@ -58,8 +58,8 @@ namespace Route.C41.G03.PL
 				options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 				options.User.RequireUniqueEmail = true;
 			})
-				.AddEntityFrameworkStores<ApplicationDbContext>();
-			//.AddDefaultTokenProviders();
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+			  .AddDefaultTokenProviders();
 
 			// services.AddAuthentication();
 
