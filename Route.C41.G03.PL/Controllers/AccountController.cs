@@ -80,9 +80,9 @@ namespace Route.C41.G03.PL.Controllers
 				if (user is not null)
 				{
 					var ResetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-					var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, token = ResetPasswordToken }, "https://localhost:44331/");
+                    var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, token = ResetPasswordToken });
 
-					await _emailSender.SendAsync(
+                    await _emailSender.SendAsync(
 						from: _configuration["EmailSettings:SenderEmail"],
 						recipients: model.Email,
 						subject: "Reset Your Password",
@@ -98,7 +98,36 @@ namespace Route.C41.G03.PL.Controllers
 		{
 			return View();
 		}
-		#endregion
+        #endregion
+
+        #region Reset Password
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["Email"] = email;
+            TempData["Token"] = token;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = TempData["Email"] as string;
+                var token = TempData["Token"] as string;
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user is not null)
+                {
+                    await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    return RedirectToAction(nameof(SignIn));
+                }
+                ModelState.AddModelError(string.Empty, "Url Is Not Valid");
+
+            }
+
+            return View(model);
+        }
+        #endregion
         public async new Task<IActionResult> SignOut()
 		{
 			await _signInManager.SignOutAsync();
