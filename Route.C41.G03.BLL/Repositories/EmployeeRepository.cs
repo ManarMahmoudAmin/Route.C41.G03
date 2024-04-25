@@ -18,7 +18,7 @@ namespace Route.C41.G03.BLL.Repositories
         }
         public IQueryable GetEmployeesByAddress(string address)
         {
-            return _dbContext.Employees.Where(E => E.Address == address);
+            return _dbContext.Employees.Where(E => E.Address.ToLower().Contains(address.ToLower()));
         }
 
         public override async Task<IEnumerable<Employee>> GetAllAsync()

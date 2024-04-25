@@ -8,7 +8,8 @@
         @TempData["Message"]
     </div>
 }
-
+@if (Model.Count() > 0)
+{
 <h1>All Departments</h1>
 <br/>
 <br/>
@@ -16,8 +17,7 @@
 <a asp-asp-controller="Department" asp-action="Create" class="btn btn-primary">Create New Department</a>
 <br />
 
-@if(Model.Count() > 0)
-{
+
     <table class="mt-4 table table-striped table-hover">
         <thead>
             <tr>
@@ -42,4 +42,10 @@
             }
         </tbody>
     </table>
+}
+else
+{
+    <div class="mt-5 alert alert-warning">
+        <h3> There is No Departments</h3>
+    </div>
 }
